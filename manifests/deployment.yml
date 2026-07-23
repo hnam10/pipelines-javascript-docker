@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: hnampipelinesjavascriptdocker 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hnampipelinesjavascriptdocker
+  template:
+    metadata:
+      labels:
+        app: hnampipelinesjavascriptdocker 
+    spec:
+      containers:
+        - name: hnampipelinesjavascriptdocker 
+          image: hansolnamacr2026.azurecr.io/hnampipelinesjavascriptdocker
+          ports:
+          - containerPort: 8080
