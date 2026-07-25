@@ -33,14 +33,20 @@ stages:
       name: PRO690
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Login to ACR
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
+        command: login
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+
+    - script: |
+        docker buildx create --use --name builder || true
+
+        docker buildx build \
+          --platform linux/amd64 \
+          -f app/Dockerfile \
+          -t $(containerRegistry)/$(imageRepository):$(tag) \
+          --push app
+      displayName: Build and Push AMD64 Image
 
     - upload: manifests
       artifact: manifests
