@@ -52,16 +52,21 @@ stages:
           --push app
     - script: |
         echo "HOME=$HOME"
-        echo "USER=$(whoami)"
+        echo "PATH=$PATH"
+
+        env | sort
+
+        which docker
+        docker --version
+        docker info | head -30
 
         ls -la $HOME/.docker
         ls -la $HOME/.docker/cli-plugins
 
-        which docker
-        docker --version
         docker buildx version
-      displayName: Debug Home
 
+      
+      displayName: Debug Agent Environment
     - upload: manifests
       artifact: manifests
 
