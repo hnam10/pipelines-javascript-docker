@@ -18,57 +18,34 @@ variables:
   tag: '$(Build.BuildId)'
   imagePullSecret: 'hansolnamacr2026dc99-auth'
 
-
-
-  # Name of the new namespace being created to deploy the PR changes.
   k8sNamespaceForPR: 'review-app-$(System.PullRequest.PullRequestId)'
 
 stages:
+
 - stage: Build
   displayName: Build stage
+
   jobs:
   - job: Build
     displayName: Build
     pool:
-      name: PRO690
+      vmImage: ubuntu-latest
+    
     steps:
     - task: Docker@2
-      displayName: Login to ACR
+      displayName: Build and push an image to container registry
       inputs:
-        command: login
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
 
-    - script: |
-        echo "PATH=$PATH"
-        which docker
-        docker --version
-        docker buildx version
-        docker buildx ls
-
-        docker buildx build \
-          --platform linux/amd64 \
-          -f app/Dockerfile \
-          -t $(containerRegistry)/$(imageRepository):$(tag) \
-          --push app
-    - script: |
-        echo "HOME=$HOME"
-        echo "PATH=$PATH"
-
-        env | sort
-
-        which docker
-        docker --version
-        docker info | head -30
-
-        ls -la $HOME/.docker
-        ls -la $HOME/.docker/cli-plugins
-
-        docker buildx version
-
-      
-      displayName: Debug Agent Environment
     - upload: manifests
       artifact: manifests
+
+
 
 - stage: Deploy
   displayName: Deploy stage
