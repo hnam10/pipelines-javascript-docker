@@ -52,12 +52,15 @@ stages:
           --push app
     - script: |
         echo "HOME=$HOME"
-        ls -l ~/.docker/cli-plugins
+        echo "USER=$(whoami)"
+
+        ls -la $HOME/.docker
+        ls -la $HOME/.docker/cli-plugins
 
         which docker
         docker --version
         docker buildx version
-      displayName: Debug Buildx
+      displayName: Debug Home
 
     - upload: manifests
       artifact: manifests
