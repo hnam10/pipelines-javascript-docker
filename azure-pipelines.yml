@@ -39,14 +39,18 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
 
     - script: |
-        docker buildx create --use --name builder || true
+        echo "PATH=$PATH"
+        which docker
+        docker --version
+        docker buildx version
+        docker buildx ls
 
         docker buildx build \
           --platform linux/amd64 \
           -f app/Dockerfile \
           -t $(containerRegistry)/$(imageRepository):$(tag) \
           --push app
-      displayName: Build and Push AMD64 Image
+      displayName: Debug Buildx
 
     - upload: manifests
       artifact: manifests
