@@ -50,6 +50,13 @@ stages:
           -f app/Dockerfile \
           -t $(containerRegistry)/$(imageRepository):$(tag) \
           --push app
+    - script: |
+        echo "HOME=$HOME"
+        ls -l ~/.docker/cli-plugins
+
+        which docker
+        docker --version
+        docker buildx version
       displayName: Debug Buildx
 
     - upload: manifests
